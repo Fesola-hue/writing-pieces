@@ -16,11 +16,11 @@ const readOutput = (relativePath) => {
   return fs.readFileSync(output, 'utf8');
 };
 
-if (personal.length !== 4) errors.push('The Personal collection does not match the approved restored set');
+if (personal.length !== 4) errors.push(`Expected 4 personal pieces, found ${personal.length}`);
 for (const title of ['People Who Made My World a Little Bigger', 'It’s Kinda Chic to Stay Informed', 'So, I Started Dating Myself', 'Hear Me Out: That’s Not What Decentering Men Means']) {
   if (!personal.some((item) => item.title === title)) errors.push(`Personal collection is missing: ${title}`);
 }
-if (offscript.length !== 5) errors.push('The OffScript collection does not match the approved restored set');
+if (offscript.length !== 5) errors.push(`Expected 5 OffScript issues, found ${offscript.length}`);
 if (writing.length !== personal.length + offscript.length) errors.push('Total collection differs from category totals');
 const issueNumbers = offscript.map((item) => item.issueNumber).sort();
 if (new Set(issueNumbers).size !== offscript.length) errors.push('An OffScript issue number is duplicated');
@@ -60,7 +60,7 @@ if ((offscriptPage.match(/class="spine"/g) || []).length !== Math.min(5, offscri
 for (const issueNumber of ['001', '002', '003', '004', '005']) if (!offscriptPage.includes(`class="spine-num">${issueNumber}</span>`)) errors.push(`OffScript shelf is missing issue ${issueNumber}`);
 if (!offscriptPage.includes('I report and explain the stories shaping everyday life in Nigeria, from politics and money to technology and culture.')) errors.push('OffScript introduction is incorrect');
 if (offscriptPage.includes('The OffScript is where I ' + 'write about')) errors.push('The old OffScript introduction remains');
-if (!explorePage.includes('Choose an idea. Follow the connections between personal observations and reported stories.')) errors.push('Explore introduction is incorrect');
+if (!explorePage.includes('Choose an idea. The map connects four personal essays with five featured OffScript issues: personal observations in burgundy and reported stories in blue.')) errors.push('Explore introduction is incorrect');
 if (!explorePage.includes('data-thought-map') || !explorePage.includes('data-thought-node')) errors.push('Explore route is not interactive');
 if ((explorePage.match(/data-thought-node/g) || []).length !== exploreCount) errors.push(`Explore route should contain the ${exploreCount} selected pieces`);
 
@@ -136,5 +136,5 @@ if (errors.length) {
   console.error(`Checks failed (${errors.length}):\n${errors.map((error) => `- ${error}`).join('\n')}`);
   process.exit(1);
 }
-console.log('Checks passed: restored content, collection routes, article routes, shelves, Explore map, author-only hidden notes, metadata, structured data, sitemap, keyboard and reduced-motion hooks.');
+console.log(`Checks passed: ${personal.length} personal + ${offscript.length} OffScript = ${writing.length} unique pieces; 4 collection routes; ${writing.length} complete article routes; dynamic counts; shelves; Explore map; author-only hidden notes; schema; sitemap; keyboard and reduced-motion hooks.`);
 

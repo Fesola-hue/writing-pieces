@@ -62,7 +62,7 @@ Author notes live separately in `content/offscript/behind-the-piece.json`. Sync 
 
 ## Redeploy
 
-Run `npm run sync:offscript` and `npm test`, then deploy the generated `dist/` directory through the existing hosting project attached to `read.aishaonola.me`. No credentials or automatic deployment are stored here. For an existing Cloudflare Pages project, the equivalent CLI command is `npx wrangler pages deploy dist --project-name <existing-project-name>`.
+Run `npm run sync:offscript` and `npm test`, then deploy the generated `dist/` directory through the existing hosting project attached to `writing.aishaonola.me`. No credentials or automatic deployment are stored here. For an existing Cloudflare Pages project, the equivalent CLI command is `npx wrangler pages deploy dist --project-name <existing-project-name>`.
 
 ## Known source issue
 

@@ -44,7 +44,7 @@ function jsonLdDocuments(html) {
 }
 
 async function getText(url) {
-  const response = await fetch(url, { headers: { 'user-agent': 'AishaWritingSync/1.0 (+https://read.aishaonola.me)' } });
+  const response = await fetch(url, { headers: { 'user-agent': 'AishaWritingSync/1.0 (+https://writing.aishaonola.me)' } });
   if (!response.ok) throw new Error(`${response.status} ${response.statusText} for ${url}`);
   return response.text();
 }

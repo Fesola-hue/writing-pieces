@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export const ROOT = path.resolve(import.meta.dirname, '..');
-export const SITE_URL = 'https://read.aishaonola.me';
+export const SITE_URL = 'https://writing.aishaonola.me';
 export const EMPTY_BEHIND = Object.freeze({ note: '', process: '', extras: [] });
 
 export function escapeHtml(value = '') {

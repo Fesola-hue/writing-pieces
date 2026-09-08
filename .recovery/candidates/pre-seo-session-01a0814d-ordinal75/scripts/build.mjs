@@ -41,46 +41,9 @@ const absolute = (pathname) => `${SITE_URL}${pathname}`;
 const categoryClass = (item) => item.kind === 'offscript' ? 'is-offscript' : 'is-personal';
 const excerpt = (item) => excerptBySlug[item.slug] || item.body.split(/(?<=[.!?])\s+/)[0].replaceAll('\n', ' ').trim();
 const pad = (number, length = 2) => String(number).padStart(length, '0');
-const PERSON_ID = `${SITE_URL}/#aisha-onola`;
-const WEBSITE_ID = `${SITE_URL}/#website`;
-const OFFSCRIPT_ID = 'https://theoffscript.page/#website';
-const OG_IMAGE = '/aisha-onola-og.png';
-const HOME_TITLE = 'Aisha Onola | Writer and Creator of The OffScript';
-const HOME_DESCRIPTION = 'Aisha Onola is a Nigerian writer in Lagos and the creator of The OffScript. Read her personal essays and reported stories about life in Nigeria.';
 
-function structuredData(extra = []) {
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Person',
-        '@id': PERSON_ID,
-        name: 'Aisha Onola',
-        url: SITE_URL,
-        jobTitle: 'Writer',
-        homeLocation: { '@type': 'Place', name: 'Lagos, Nigeria' }
-      },
-      {
-        '@type': 'WebSite',
-        '@id': WEBSITE_ID,
-        name: 'Aisha Onola',
-        url: SITE_URL,
-        creator: { '@id': PERSON_ID }
-      },
-      {
-        '@type': 'WebSite',
-        '@id': OFFSCRIPT_ID,
-        name: 'The OffScript',
-        url: 'https://theoffscript.page',
-        creator: { '@id': PERSON_ID }
-      },
-      ...extra
-    ]
-  };
-}
-
-function head({ title, description, pathname = '/', image = OG_IMAGE, type = 'website', schema, home = false, published }) {
-  const pageTitle = home ? title : `${title} | Aisha Onola`;
+function head({ title, description, pathname = '/', canonical, image = '/writing/people-who-made-my-world.jpeg', type = 'website', schema }) {
+  const pageTitle = `${title} | Aisha Onola`;
   const pageUrl = absolute(pathname);
   return `<!doctype html>
 <html lang="en">
@@ -88,32 +51,21 @@ function head({ title, description, pathname = '/', image = OG_IMAGE, type = 'we
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6efe4">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" href="data:,">
   <title>${escapeHtml(pageTitle)}</title>
   <meta name="description" content="${escapeHtml(description)}">
   <meta name="author" content="Aisha Onola">
-  <link rel="canonical" href="${escapeHtml(pageUrl)}">
+  <link rel="canonical" href="${escapeHtml(canonical || pageUrl)}">
   <meta property="og:type" content="${type}">
-  <meta property="og:locale" content="en_NG">
-  <meta property="og:site_name" content="Aisha Onola">
+  <meta property="og:site_name" content="Aisha Onola | Writing">
   <meta property="og:title" content="${escapeHtml(pageTitle)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:url" content="${escapeHtml(pageUrl)}">
   <meta property="og:image" content="${escapeHtml(absolute(image))}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Aisha Onola, writer in Lagos">
-  ${published ? `<meta property="article:published_time" content="${escapeHtml(published)}">` : ''}
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(pageTitle)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
   <meta name="twitter:image" content="${escapeHtml(absolute(image))}">
-  <meta name="twitter:image:alt" content="Aisha Onola, writer in Lagos">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
@@ -181,19 +133,17 @@ function homePage() {
   ${writerSection()}
   <div class="reveal">${gateways()}</div>
   ${compactSubscribe()}`;
-  const schema = structuredData();
-  return page({ active: 'home', title: HOME_TITLE, description: HOME_DESCRIPTION, pathname: '/', schema, home: true, bodyClass: 'home-page', body });
+  const schema = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Aisha Onola | Writing', url: SITE_URL, author: { '@type': 'Person', name: 'Aisha Onola', url: 'https://aishaonola.me' } };
+  return page({ active: 'home', title: 'Things I’ve written.', description: 'Personal essays, observations, and stories about Nigeria, culture, work, identity, and the internet.', pathname: '/', schema, bodyClass: 'home-page', body });
 }
 
 function personalShelfPage() {
   const shelf = `<section class="collection-hero personal-collection reveal"><div class="wrap collection-hero-inner"><div><p class="eyebrow">Personal writing</p><h1>The things that get personal.</h1></div><div class="collection-intro"><p>Some things make more sense to me once I write them down. These are the pieces where I turn the questions inward: identity, people, growing up, relationships, self-perception, and the small experiences that quietly change how I understand myself.</p><a class="collection-cta" href="#personal-shelf-heading">Browse the essays ↓</a></div></div></section>
   <section class="personal-shelf wrap reveal" aria-labelledby="personal-shelf-heading" data-shelf="personal" tabindex="0"><div class="shelf-heading"><h2 id="personal-shelf-heading">The essay shelf</h2><div class="view-toggle" role="group" aria-label="Choose shelf view"><button type="button" class="active" data-view="shelf" aria-pressed="true">Shelf view</button><button type="button" data-view="list" aria-pressed="false">List view</button></div></div>
   <div class="shelf-experience"><div class="personal-deck" data-deck>${personal.map((item, index) => `<button type="button" class="personal-cover ${index === 0 ? 'is-selected' : ''}" data-slide="${index}" aria-pressed="${index === 0}" aria-controls="personal-detail-${index}" style="--i:${index}"><img src="${item.cover}" alt="Cover image for ${escapeHtml(item.title)}"><span>${pad(index + 1)}</span></button>`).join('')}</div>
-  <div class="shelf-detail">${personal.map((item, index) => `<article id="personal-detail-${index}" data-slide-panel="${index}" ${index === 0 ? '' : 'hidden'}><p class="mono-label">${escapeHtml(formatDate(item.date))} · ${escapeHtml(item.publication)}</p><h3>${escapeHtml(item.title)}</h3><p class="detail-subtitle">${escapeHtml(item.subtitle)}</p><blockquote>“${escapeHtml(excerpt(item))}”</blockquote><a class="button button-wine" href="${internal(item)}">Read the story →</a></article>`).join('')}<div class="deck-controls"><button type="button" data-shelf-move="-1" aria-label="Previous personal story">←</button><p aria-live="polite"><span data-shelf-current>1</span></p><button type="button" data-shelf-move="1" aria-label="Next personal story">→</button></div></div></div>
+  <div class="shelf-detail">${personal.map((item, index) => `<article id="personal-detail-${index}" data-slide-panel="${index}" ${index === 0 ? '' : 'hidden'}><p class="mono-label">${escapeHtml(formatDate(item.date))} · ${escapeHtml(item.publication)}</p><h3>${escapeHtml(item.title)}</h3><p class="detail-subtitle">${escapeHtml(item.subtitle)}</p><blockquote>“${escapeHtml(excerpt(item))}”</blockquote><a class="button button-wine" href="${internal(item)}">Read the story →</a></article>`).join('')}<div class="deck-controls"><button type="button" data-shelf-move="-1" aria-label="Previous personal story">←</button><p aria-live="polite"><span data-shelf-current>1</span> / ${pad(personal.length)}</p><button type="button" data-shelf-move="1" aria-label="Next personal story">→</button></div></div></div>
   <div class="personal-list" hidden>${personal.map((item, index) => `<article><span>${pad(index + 1)}</span><div><p>${escapeHtml(formatDate(item.date))}</p><h3><a href="${internal(item)}">${escapeHtml(item.title)}</a></h3><p>${escapeHtml(item.subtitle)}</p></div><a href="${internal(item)}" aria-label="Read ${escapeHtml(item.title)}">→</a></article>`).join('')}</div></section>`;
-  const pathname = '/personal/';
-  const schema = structuredData([{ '@type': 'CollectionPage', '@id': `${absolute(pathname)}#collection`, name: 'Personal writing', url: absolute(pathname), description: 'Personal essays by Aisha Onola about identity, people, work, culture and self-knowledge.', isPartOf: { '@id': WEBSITE_ID }, author: { '@id': PERSON_ID } }]);
-  return page({ active: 'personal', title: 'Personal writing', description: 'Read Aisha Onola’s personal essays about identity, people, work, culture and self-knowledge.', pathname, schema, bodyClass: 'personal-page', body: shelf });
+  return page({ active: 'personal', title: 'Personal writing', description: `${personal.length} personal essays and observations by Aisha Onola.`, pathname: '/personal/', bodyClass: 'personal-page', body: shelf });
 }
 
 function offscriptShelfPage() {
@@ -206,23 +156,18 @@ function offscriptShelfPage() {
   <div class="spine-shelf reveal-stagger">${featuredIssues.map((item, index) => { const [bg, fg] = spineColors[index % spineColors.length]; return `<a class="spine" href="${internal(item)}" style="--spine-bg:${bg};--spine-fg:${fg}" title="${escapeHtml(item.title)}"><span class="spine-num">${item.issueNumber}</span><span class="spine-title">${escapeHtml(spineText(item.title))}</span></a>`; }).join('')}</div>
   ${remaining > 0 ? `<div class="spine-nudge"><a class="button button-blue" href="https://theoffscript.page/">Read more issues on The OffScript ↗</a></div>` : ''}
   </section>`;
-  const pathname = '/offscript/';
-  const schema = structuredData([{ '@type': 'CollectionPage', '@id': `${absolute(pathname)}#collection`, name: 'The OffScript', url: absolute(pathname), description: 'Reported stories by Aisha Onola about Nigeria, money, technology and the systems beneath ordinary life.', isPartOf: { '@id': WEBSITE_ID }, creator: { '@id': PERSON_ID }, sameAs: 'https://theoffscript.page' }]);
-  return page({ active: 'offscript', title: 'The OffScript', description: 'Read The OffScript stories by Aisha Onola about Nigeria, money, technology and the systems beneath ordinary life.', pathname, schema, bodyClass: 'offscript-page', body });
+  return page({ active: 'offscript', title: 'The OffScript shelf', description: `${featuredIssues.length} featured OffScript issues by Aisha Onola, with the full archive on theoffscript.page.`, pathname: '/offscript/', image: featuredIssues[0].cover, bodyClass: 'offscript-page', body });
 }
 
 function explorePage() {
   const preferred = exploreThemes;
   const themes = preferred.filter((theme) => themeCounts.has(theme));
   const initial = themes.includes('Nigeria') ? 'Nigeria' : themes[0];
-  const body = `<section class="explore-hero wrap reveal"><p class="eyebrow">Explore</p><h1>Follow the thought.</h1><p>Choose an idea. Follow the connections between personal observations and reported stories.</p></section>
+  const body = `<section class="explore-hero wrap reveal"><p class="eyebrow">Explore · ${exploreWriting.length} connected pieces</p><h1>Follow the thought.</h1><p>Choose an idea. The map connects four personal essays with five featured OffScript issues: personal observations in burgundy and reported stories in blue.</p></section>
   <section class="thought-map wrap reveal" aria-labelledby="thought-map-heading" data-thought-map data-initial-theme="${escapeHtml(initial.toLowerCase())}"><h2 id="thought-map-heading" class="sr-only">Recurring themes across the writing</h2><div class="theme-picker" role="group" aria-label="Choose a recurring theme">${themes.map((theme) => `<button type="button" data-theme="${escapeHtml(theme.toLowerCase())}" aria-pressed="${theme === initial}"><span>${escapeHtml(theme)}</span><small>${themeCounts.get(theme)}</small></button>`).join('')}</div>
   <div class="map-canvas"><svg class="map-lines" aria-hidden="true"></svg><div class="theme-hub"><span>Following</span><strong data-theme-label>${escapeHtml(initial)}</strong></div><div class="thought-nodes">${exploreWriting.map((item, index) => `<article class="thought-node ${categoryClass(item)}" data-thought-node data-topics="${escapeHtml(item.topics.join('|').toLowerCase())}" style="--node:${index}"><p>${item.kind === 'offscript' ? `Issue ${item.issueNumber}` : 'Personal'}</p><h3><a href="${internal(item)}">${escapeHtml(item.title)}</a></h3><blockquote>“${escapeHtml(excerpt(item))}”</blockquote><div>${item.topics.map((topic) => `<span>${escapeHtml(topic)}</span>`).join('')}</div></article>`).join('')}</div></div>
   <p class="map-status" aria-live="polite"><span data-map-count></span> pieces connected to <strong data-status-theme>${escapeHtml(initial)}</strong>.</p></section>`;
-  const pathname = '/explore/';
-  const description = 'Choose an idea and follow the connections between Aisha Onola’s personal observations and reported stories.';
-  const schema = structuredData([{ '@type': 'CollectionPage', '@id': `${absolute(pathname)}#collection`, name: 'Explore the ideas', url: absolute(pathname), description, isPartOf: { '@id': WEBSITE_ID }, author: { '@id': PERSON_ID } }]);
-  return page({ active: 'explore', title: 'Explore the ideas', description, pathname, schema, bodyClass: 'explore-page', body });
+  return page({ active: 'explore', title: 'Explore the ideas', description: `Explore recurring ideas across ${exploreWriting.length} connected pieces by Aisha Onola.`, pathname: '/explore/', bodyClass: 'explore-page', body });
 }
 
 function behindPiece(item) {
@@ -241,8 +186,7 @@ function relatedFor(item) {
 }
 
 function articlePage(item) {
-  const pathname = internal(item);
-  const canonical = absolute(pathname);
+  const canonical = item.originalUrl || absolute(internal(item));
   const related = relatedFor(item).map((candidate) => candidate.kind === 'offscript' && candidate.followTitle ? { ...candidate, title: candidate.followTitle } : candidate);
   const originalLabel = item.kind === 'offscript' ? 'The OffScript' : item.publication;
   const subscribe = item.kind === 'offscript' ? `<a class="button button-blue" href="${item.subscribeUrl}">Subscribe to The OffScript ↗</a><a class="text-link" href="/personal/">Explore personal writing →</a>` : `<a class="button button-cream" href="${item.subscribeUrl}">${item.publication === 'Medium' ? 'Follow on Medium' : 'Read on Substack'} ↗</a><a class="text-link" href="/offscript/">Explore The OffScript →</a>`;
@@ -250,8 +194,8 @@ function articlePage(item) {
   <div class="article-layout"><article class="article-body">${item.bodyHtml}</article><aside class="article-aside"><p>${item.kind === 'offscript' ? `ISSUE ${item.issueNumber}` : 'PERSONAL'}</p><span>${escapeHtml(item.topics.join(' · '))}</span></aside></div>
   <div class="article-after wrap-narrow reveal">${behindPiece(item)}${item.originalUrl ? `<div class="original-cta"><p>Originally published in ${escapeHtml(originalLabel)}</p><a class="button ${item.kind === 'offscript' ? 'button-blue' : 'button-dark'}" href="${escapeHtml(item.originalUrl)}">Read the original on ${escapeHtml(originalLabel)} ↗</a></div>` : ''}<section class="related" aria-labelledby="related-heading"><p class="eyebrow">Keep following it</p><h2 id="related-heading">Follow this thought</h2><div class="reveal-stagger">${related.map((candidate) => `<article class="${categoryClass(candidate)}"><p>${candidate.kind === 'offscript' ? `The OffScript · Issue ${candidate.issueNumber}` : 'Personal writing'}</p><h3><a href="${internal(candidate)}">${escapeHtml(candidate.title)}</a></h3><div class="topic-row">${candidate.topics.filter((topic) => item.topics.includes(topic)).map((topic) => `<span>${escapeHtml(topic)}</span>`).join('')}</div><a class="read-link" href="${internal(candidate)}">Read the story →</a></article>`).join('')}</div></section></div>
   <section class="article-subscribe reveal"><div><h2>${item.kind === 'offscript' ? 'Stay in tune.' : 'More personal writing?'}</h2><p>${item.kind === 'offscript' ? 'One weekly email explaining the stories shaping everyday life in Nigeria.' : 'Essays and observations about identity, people, work, and culture.'}</p>${subscribe}</div></section>`;
-  const schema = structuredData([{ '@type': 'BlogPosting', '@id': `${canonical}#article`, headline: item.title, description: item.subtitle, url: canonical, image: absolute(OG_IMAGE), datePublished: item.date, author: { '@id': PERSON_ID }, creator: { '@id': PERSON_ID }, publisher: { '@id': PERSON_ID }, mainEntityOfPage: canonical, isPartOf: { '@id': item.kind === 'offscript' ? OFFSCRIPT_ID : WEBSITE_ID }, isAccessibleForFree: true }]);
-  return page({ active: item.kind === 'offscript' ? 'offscript' : 'personal', title: item.title, description: item.subtitle, pathname, type: 'article', published: item.date, schema, bodyClass: `article-page ${categoryClass(item)}`, body });
+  const schema = { '@context': 'https://schema.org', '@type': item.kind === 'offscript' ? 'NewsArticle' : 'Article', headline: item.title, description: item.subtitle, image: absolute(item.cover), datePublished: item.date, author: { '@type': 'Person', name: 'Aisha Onola', url: 'https://aishaonola.me' }, publisher: { '@type': 'Organization', name: item.publication }, mainEntityOfPage: canonical, isAccessibleForFree: true };
+  return page({ active: item.kind === 'offscript' ? 'offscript' : 'personal', title: item.title, description: item.subtitle, pathname: internal(item), canonical, image: item.cover, type: 'article', schema, bodyClass: `article-page ${categoryClass(item)}`, body });
 }
 
 fs.rmSync(dist, { recursive: true, force: true });
@@ -268,8 +212,8 @@ for (const item of writing) {
   fs.mkdirSync(articleDir, { recursive: true });
   fs.writeFileSync(path.join(articleDir, 'index.html'), articlePage(item), 'utf8');
 }
-const sitemapPaths = ['/', '/personal/', '/offscript/', '/explore/', ...personal.map(internal), ...featuredOffscript.map(internal)];
+const sitemapPaths = ['/', '/personal/', '/offscript/', '/explore/', ...writing.map(internal)];
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((pathname) => `  <url><loc>${absolute(pathname)}</loc></url>`).join('\n')}\n</urlset>\n`, 'utf8');
 fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`, 'utf8');
-console.log('Built the collection routes, article pages, structured data, sitemap, robots file and social metadata.');
+console.log(`Built 4 collection routes + ${writing.length} internal article pages from ${personal.length} personal pieces and ${offscript.length} OffScript issues.`);
 

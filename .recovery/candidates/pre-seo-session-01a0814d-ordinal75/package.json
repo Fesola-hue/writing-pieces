@@ -9,10 +9,9 @@
     "preview": "node scripts/dev.mjs",
     "sync:offscript": "node scripts/sync-offscript.mjs",
     "check": "node scripts/check.mjs",
-    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check scripts/sync-offscript.mjs && node --check scripts/check.mjs && node --check scripts/seo-check.mjs && node --check public/site.js",
+    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check scripts/sync-offscript.mjs && node --check scripts/check.mjs && node --check public/site.js",
     "typecheck": "node scripts/check.mjs",
-    "check:seo": "node scripts/seo-check.mjs",
-    "test": "npm run lint && npm run build && npm run check && npm run check:seo"
+    "test": "npm run lint && npm run build && npm run check"
   },
   "engines": {
     "node": ">=20"

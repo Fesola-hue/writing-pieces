@@ -21,7 +21,7 @@ Audit date: 6 September 2026.
 | 004 | Nigeria Uses AI but doesnt own any of it | `offscript-004-nigeria-doesn-t-have-an-ai-problem-it-has-an-ownership-problem` |
 | 005 | Why Cement Costs So Much | `offscript-005-we-make-enough-cement-to-export-it-so-why-is-a-bag-still-13-000` |
 
-Validated the restored Personal and OffScript collections without publishing a collection-size claim.
+Validated collection: 4 personal pieces + 5 OffScript issues = 9 unique pieces.
 
 ## Malformed or unreliable fields
 
@@ -34,7 +34,7 @@ Validated the restored Personal and OffScript collections without publishing a c
 
 ## Cause of the old count/display bug
 
-The old homepage attached `data-writing-card` to both featured cards and every archive card. Its filter counted presentation instances rather than unique content records. The rebuilt site derives its collection from validated content records and never mixes featured presentation instances into collection totals.
+The old homepage attached `data-writing-card` to both featured cards and every archive card. Its filter counted DOM cards rather than unique content records. Selecting Personal therefore reported 6: two duplicated featured DOM cards plus four unique personal archive cards. Only four pieces appeared in the visible collection because there are correctly four unique personal records. The rebuilt site derives counts from the validated content arrays and never mixes featured presentation instances into collection counts.
 
 ## Behind the Piece audit
 
