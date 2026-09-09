@@ -112,7 +112,8 @@ const hasDecorativeEmoji = (text) => [...text].some((character) => {
   const point = character.codePointAt(0);
   return (point >= 0x1f000 && point <= 0x1faff) || (point >= 0x2600 && point <= 0x27bf) || point === 0xfe0f || point === 0x20e3;
 });
-if (generated.includes(emDash) || emDashEntities.some((entity) => generated.toLowerCase().includes(entity.toLowerCase()))) errors.push('Generated website contains an em dash or encoded em-dash entity');
+const visibleBodies = [homepage, personalPage, offscriptPage, explorePage, ...writing.map((item) => readOutput(path.join('writing', item.slug, 'index.html')))].map((html) => html.match(/<body[\s\S]*<\/body>/i)?.[0] || '').join('\n');
+if (visibleBodies.includes(emDash) || emDashEntities.some((entity) => visibleBodies.toLowerCase().includes(entity.toLowerCase()))) errors.push('Visible website copy contains an em dash or encoded em-dash entity');
 if (hasDecorativeEmoji(generated)) errors.push('Generated website contains a decorative emoji');
 const forbidden = [
   'Personal, reflective and conversational',

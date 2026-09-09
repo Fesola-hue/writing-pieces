@@ -43,10 +43,13 @@ const excerpt = (item) => excerptBySlug[item.slug] || item.body.split(/(?<=[.!?]
 const pad = (number, length = 2) => String(number).padStart(length, '0');
 const PERSON_ID = `${SITE_URL}/#aisha-onola`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
-const OFFSCRIPT_ID = 'https://theoffscript.page/#website';
+const PERSONAL_COLLECTION_ID = `${SITE_URL}/personal/#collection`;
+const OFFSCRIPT_COLLECTION_ID = `${SITE_URL}/offscript/#collection`;
 const OG_IMAGE = '/aisha-onola-og.png';
-const HOME_TITLE = 'Aisha Onola | Writer and Creator of The OffScript';
-const HOME_DESCRIPTION = 'Aisha Onola is a Nigerian writer in Lagos and the creator of The OffScript. Read her personal essays and reported stories about life in Nigeria.';
+const HOME_TITLE = 'Aisha Onola — Writing, Essays & Reported Stories';
+const HOME_DESCRIPTION = 'Personal essays, reported stories and writing by Aisha Onola on identity, money, culture, technology, work and everyday life.';
+const HOME_SOCIAL_TITLE = 'Aisha Onola — Writing';
+const HOME_SOCIAL_DESCRIPTION = 'Personal essays, reported stories and writing on identity, money, culture, technology, work and everyday life.';
 
 function structuredData(extra = []) {
   return {
@@ -56,32 +59,30 @@ function structuredData(extra = []) {
         '@type': 'Person',
         '@id': PERSON_ID,
         name: 'Aisha Onola',
-        url: SITE_URL,
+        url: 'https://aishaonola.me',
         jobTitle: 'Writer',
         homeLocation: { '@type': 'Place', name: 'Lagos, Nigeria' }
       },
       {
         '@type': 'WebSite',
         '@id': WEBSITE_ID,
-        name: 'Aisha Onola',
+        name: 'Aisha Onola Writing',
+        alternateName: 'Aisha Onola — Writing',
         url: SITE_URL,
-        creator: { '@id': PERSON_ID }
-      },
-      {
-        '@type': 'WebSite',
-        '@id': OFFSCRIPT_ID,
-        name: 'The OffScript',
-        url: 'https://theoffscript.page',
-        creator: { '@id': PERSON_ID }
+        author: { '@id': PERSON_ID },
+        creator: { '@id': PERSON_ID },
+        about: { '@id': PERSON_ID }
       },
       ...extra
     ]
   };
 }
 
-function head({ title, description, pathname = '/', image = OG_IMAGE, type = 'website', schema, home = false, published }) {
+function head({ title, description, pathname = '/', image = OG_IMAGE, type = 'website', schema, home = false, published, socialTitle, socialDescription }) {
   const pageTitle = home ? title : `${title} | Aisha Onola`;
   const pageUrl = absolute(pathname);
+  const shareTitle = socialTitle || pageTitle;
+  const shareDescription = socialDescription || description;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -97,12 +98,13 @@ function head({ title, description, pathname = '/', image = OG_IMAGE, type = 'we
   <title>${escapeHtml(pageTitle)}</title>
   <meta name="description" content="${escapeHtml(description)}">
   <meta name="author" content="Aisha Onola">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="${escapeHtml(pageUrl)}">
   <meta property="og:type" content="${type}">
   <meta property="og:locale" content="en_NG">
   <meta property="og:site_name" content="Aisha Onola">
-  <meta property="og:title" content="${escapeHtml(pageTitle)}">
-  <meta property="og:description" content="${escapeHtml(description)}">
+  <meta property="og:title" content="${escapeHtml(shareTitle)}">
+  <meta property="og:description" content="${escapeHtml(shareDescription)}">
   <meta property="og:url" content="${escapeHtml(pageUrl)}">
   <meta property="og:image" content="${escapeHtml(absolute(image))}">
   <meta property="og:image:width" content="1200">
@@ -110,8 +112,8 @@ function head({ title, description, pathname = '/', image = OG_IMAGE, type = 'we
   <meta property="og:image:alt" content="Aisha Onola, writer in Lagos">
   ${published ? `<meta property="article:published_time" content="${escapeHtml(published)}">` : ''}
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${escapeHtml(pageTitle)}">
-  <meta name="twitter:description" content="${escapeHtml(description)}">
+  <meta name="twitter:title" content="${escapeHtml(shareTitle)}">
+  <meta name="twitter:description" content="${escapeHtml(shareDescription)}">
   <meta name="twitter:image" content="${escapeHtml(absolute(image))}">
   <meta name="twitter:image:alt" content="Aisha Onola, writer in Lagos">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -127,14 +129,14 @@ function nav(active) {
   const items = [['home', '/', 'Home'], ['personal', '/personal/', 'Personal'], ['offscript', '/offscript/', 'The OffScript'], ['explore', '/explore/', 'Explore']];
   return `<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
-  <a class="wordmark" href="https://aishaonola.me" aria-label="A. Onola, main website">A. Onola</a>
+  <a class="wordmark" href="/" aria-label="Aisha Onola Writing, home">A. Onola</a>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Menu</span><i aria-hidden="true"></i></button>
   <nav id="site-nav" aria-label="Primary navigation">${items.map(([key, href, label]) => `<a href="${href}"${active === key ? ' class="active" aria-current="page"' : ''}>${label}</a>`).join('')}<a href="https://aishaonola.me/#about">About</a></nav>
 </header>`;
 }
 
 function footer() {
-  return `<footer class="site-footer"><div><a class="footer-name" href="https://aishaonola.me">Aisha Onola</a><p>Writer in Lagos.</p><a class="footer-email" href="mailto:contact@aishaonola.me">contact@aishaonola.me</a></div><a class="back-top" href="#top">Back to top ↑</a></footer>`;
+  return `<footer class="site-footer"><div><a class="footer-name" href="/">Aisha Onola</a><p>Writer in Lagos.</p><a class="footer-email" href="mailto:contact@aishaonola.me">contact@aishaonola.me</a></div><a class="back-top" href="#top">Back to top ↑</a></footer>`;
 }
 
 function page({ active, body, bodyClass = '', ...meta }) {
@@ -176,13 +178,13 @@ function threadCluster(limit = 8) {
 }
 
 function homePage() {
-  const body = `<section class="lobby-hero"><div><p class="eyebrow">Writing</p><h1>Things I’ve <span class="edited-word"><s>said</s><em>written.</em><svg viewBox="0 0 310 24" aria-hidden="true"><path d="M4 16c74-8 178-11 302-7"/></svg></span></h1><p class="intro">The words I keep coming back to, whatever I'm writing about.</p>${threadCluster()}<a class="choose-start thread-link" href="/explore/">Follow a thread <span aria-hidden="true">→</span></a></div></section>
+  const body = `<section class="lobby-hero"><div><p class="eyebrow">Writing</p><h1>Things I’ve <span class="edited-word"><s>said</s><em>written.</em><svg viewBox="0 0 310 24" aria-hidden="true"><path d="M4 16c74-8 178-11 302-7"/></svg></span></h1><p class="intro">${HOME_DESCRIPTION}</p>${threadCluster()}<a class="choose-start thread-link" href="/explore/">Follow a thread <span aria-hidden="true">→</span></a></div></section>
   <div class="reveal">${featuredPair()}</div>
   ${writerSection()}
   <div class="reveal">${gateways()}</div>
   ${compactSubscribe()}`;
   const schema = structuredData();
-  return page({ active: 'home', title: HOME_TITLE, description: HOME_DESCRIPTION, pathname: '/', schema, home: true, bodyClass: 'home-page', body });
+  return page({ active: 'home', title: HOME_TITLE, description: HOME_DESCRIPTION, socialTitle: HOME_SOCIAL_TITLE, socialDescription: HOME_SOCIAL_DESCRIPTION, pathname: '/', schema, home: true, bodyClass: 'home-page', body });
 }
 
 function personalShelfPage() {
@@ -192,8 +194,9 @@ function personalShelfPage() {
   <div class="shelf-detail">${personal.map((item, index) => `<article id="personal-detail-${index}" data-slide-panel="${index}" ${index === 0 ? '' : 'hidden'}><p class="mono-label">${escapeHtml(formatDate(item.date))} · ${escapeHtml(item.publication)}</p><h3>${escapeHtml(item.title)}</h3><p class="detail-subtitle">${escapeHtml(item.subtitle)}</p><blockquote>“${escapeHtml(excerpt(item))}”</blockquote><a class="button button-wine" href="${internal(item)}">Read the story →</a></article>`).join('')}<div class="deck-controls"><button type="button" data-shelf-move="-1" aria-label="Previous personal story">←</button><p aria-live="polite"><span data-shelf-current>1</span></p><button type="button" data-shelf-move="1" aria-label="Next personal story">→</button></div></div></div>
   <div class="personal-list" hidden>${personal.map((item, index) => `<article><span>${pad(index + 1)}</span><div><p>${escapeHtml(formatDate(item.date))}</p><h3><a href="${internal(item)}">${escapeHtml(item.title)}</a></h3><p>${escapeHtml(item.subtitle)}</p></div><a href="${internal(item)}" aria-label="Read ${escapeHtml(item.title)}">→</a></article>`).join('')}</div></section>`;
   const pathname = '/personal/';
-  const schema = structuredData([{ '@type': 'CollectionPage', '@id': `${absolute(pathname)}#collection`, name: 'Personal writing', url: absolute(pathname), description: 'Personal essays by Aisha Onola about identity, people, work, culture and self-knowledge.', isPartOf: { '@id': WEBSITE_ID }, author: { '@id': PERSON_ID } }]);
-  return page({ active: 'personal', title: 'Personal writing', description: 'Read Aisha Onola’s personal essays about identity, people, work, culture and self-knowledge.', pathname, schema, bodyClass: 'personal-page', body: shelf });
+  const description = 'Personal essays by Aisha Onola on identity, relationships, work, growth and figuring out life in real time.';
+  const schema = structuredData([{ '@type': 'CollectionPage', '@id': PERSONAL_COLLECTION_ID, name: 'Personal Essays', url: absolute(pathname), description, isPartOf: { '@id': WEBSITE_ID }, author: { '@id': PERSON_ID } }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Aisha Onola Writing', item: absolute('/') }, { '@type': 'ListItem', position: 2, name: 'Personal Writing', item: absolute(pathname) }] }]);
+  return page({ active: 'personal', title: 'Personal Essays', description, pathname, schema, bodyClass: 'personal-page', body: shelf });
 }
 
 function offscriptShelfPage() {
@@ -207,8 +210,9 @@ function offscriptShelfPage() {
   ${remaining > 0 ? `<div class="spine-nudge"><a class="button button-blue" href="https://theoffscript.page/">Read more issues on The OffScript ↗</a></div>` : ''}
   </section>`;
   const pathname = '/offscript/';
-  const schema = structuredData([{ '@type': 'CollectionPage', '@id': `${absolute(pathname)}#collection`, name: 'The OffScript', url: absolute(pathname), description: 'Reported stories by Aisha Onola about Nigeria, money, technology and the systems beneath ordinary life.', isPartOf: { '@id': WEBSITE_ID }, creator: { '@id': PERSON_ID }, sameAs: 'https://theoffscript.page' }]);
-  return page({ active: 'offscript', title: 'The OffScript', description: 'Read The OffScript stories by Aisha Onola about Nigeria, money, technology and the systems beneath ordinary life.', pathname, schema, bodyClass: 'offscript-page', body });
+  const description = 'Reported stories and explainers by Aisha Onola for The OffScript, covering politics, money, technology, culture and everyday life in Nigeria.';
+  const schema = structuredData([{ '@type': 'CollectionPage', '@id': OFFSCRIPT_COLLECTION_ID, name: 'The OffScript Stories', url: absolute(pathname), description, isPartOf: { '@id': WEBSITE_ID }, author: { '@id': PERSON_ID }, sameAs: 'https://theoffscript.page' }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Aisha Onola Writing', item: absolute('/') }, { '@type': 'ListItem', position: 2, name: 'The OffScript', item: absolute(pathname) }] }]);
+  return page({ active: 'offscript', title: 'The OffScript Stories', description, pathname, schema, bodyClass: 'offscript-page', body });
 }
 
 function explorePage() {
@@ -250,7 +254,10 @@ function articlePage(item) {
   <div class="article-layout"><article class="article-body">${item.bodyHtml}</article><aside class="article-aside"><p>${item.kind === 'offscript' ? `ISSUE ${item.issueNumber}` : 'PERSONAL'}</p><span>${escapeHtml(item.topics.join(' · '))}</span></aside></div>
   <div class="article-after wrap-narrow reveal">${behindPiece(item)}${item.originalUrl ? `<div class="original-cta"><p>Originally published in ${escapeHtml(originalLabel)}</p><a class="button ${item.kind === 'offscript' ? 'button-blue' : 'button-dark'}" href="${escapeHtml(item.originalUrl)}">Read the original on ${escapeHtml(originalLabel)} ↗</a></div>` : ''}<section class="related" aria-labelledby="related-heading"><p class="eyebrow">Keep following it</p><h2 id="related-heading">Follow this thought</h2><div class="reveal-stagger">${related.map((candidate) => `<article class="${categoryClass(candidate)}"><p>${candidate.kind === 'offscript' ? `The OffScript · Issue ${candidate.issueNumber}` : 'Personal writing'}</p><h3><a href="${internal(candidate)}">${escapeHtml(candidate.title)}</a></h3><div class="topic-row">${candidate.topics.filter((topic) => item.topics.includes(topic)).map((topic) => `<span>${escapeHtml(topic)}</span>`).join('')}</div><a class="read-link" href="${internal(candidate)}">Read the story →</a></article>`).join('')}</div></section></div>
   <section class="article-subscribe reveal"><div><h2>${item.kind === 'offscript' ? 'Stay in tune.' : 'More personal writing?'}</h2><p>${item.kind === 'offscript' ? 'One weekly email explaining the stories shaping everyday life in Nigeria.' : 'Essays and observations about identity, people, work, and culture.'}</p>${subscribe}</div></section>`;
-  const schema = structuredData([{ '@type': 'BlogPosting', '@id': `${canonical}#article`, headline: item.title, description: item.subtitle, url: canonical, image: absolute(OG_IMAGE), datePublished: item.date, author: { '@id': PERSON_ID }, creator: { '@id': PERSON_ID }, publisher: { '@id': PERSON_ID }, mainEntityOfPage: canonical, isPartOf: { '@id': item.kind === 'offscript' ? OFFSCRIPT_ID : WEBSITE_ID }, isAccessibleForFree: true }]);
+  const collectionPath = item.kind === 'offscript' ? '/offscript/' : '/personal/';
+  const collectionName = item.kind === 'offscript' ? 'The OffScript' : 'Personal Writing';
+  const collectionId = item.kind === 'offscript' ? OFFSCRIPT_COLLECTION_ID : PERSONAL_COLLECTION_ID;
+  const schema = structuredData([{ '@type': 'BlogPosting', '@id': `${canonical}#article`, headline: item.title, description: item.subtitle, url: canonical, image: absolute(OG_IMAGE), datePublished: item.date, author: { '@id': PERSON_ID }, creator: { '@id': PERSON_ID }, publisher: { '@id': PERSON_ID }, mainEntityOfPage: canonical, isPartOf: { '@id': collectionId }, isAccessibleForFree: true }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Aisha Onola Writing', item: absolute('/') }, { '@type': 'ListItem', position: 2, name: collectionName, item: absolute(collectionPath) }, { '@type': 'ListItem', position: 3, name: item.title, item: canonical }] }]);
   return page({ active: item.kind === 'offscript' ? 'offscript' : 'personal', title: item.title, description: item.subtitle, pathname, type: 'article', published: item.date, schema, bodyClass: `article-page ${categoryClass(item)}`, body });
 }
 
@@ -268,7 +275,7 @@ for (const item of writing) {
   fs.mkdirSync(articleDir, { recursive: true });
   fs.writeFileSync(path.join(articleDir, 'index.html'), articlePage(item), 'utf8');
 }
-const sitemapPaths = ['/', '/personal/', '/offscript/', '/explore/', ...personal.map(internal), ...featuredOffscript.map(internal)];
+const sitemapPaths = ['/', '/personal/', '/offscript/', '/explore/', ...writing.map(internal)];
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((pathname) => `  <url><loc>${absolute(pathname)}</loc></url>`).join('\n')}\n</urlset>\n`, 'utf8');
 fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`, 'utf8');
 console.log('Built the collection routes, article pages, structured data, sitemap, robots file and social metadata.');

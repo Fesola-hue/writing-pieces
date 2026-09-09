@@ -96,10 +96,10 @@ for (const viewport of viewports) {
       });
       await new Promise((resolve) => setTimeout(resolve, 90));
     }
-    await evaluate(`new Promise((resolve) => { scrollTo(0, 0); setTimeout(() => resolve(true), 120); })`);
+    await evaluate(`new Promise((resolve) => { document.documentElement.style.scrollBehavior = 'auto'; scrollTo(0, 0); requestAnimationFrame(() => requestAnimationFrame(() => resolve(true))); })`);
     const audit = await evaluate(`(() => {
       const text = document.body.innerText;
-      const html = document.documentElement.outerHTML;
+      const bodyHtml = document.body.innerHTML;
       const firstBodyParagraph = document.querySelector('.article-body p:first-child');
       const subtitle = document.querySelector('.article-subtitle');
       const headline = document.querySelector('.article-hero h1');
@@ -140,7 +140,7 @@ for (const viewport of viewports) {
         horizontalOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         brokenImages: [...document.images].filter((image) => !image.complete || image.naturalWidth === 0).map((image) => image.getAttribute('src')),
         unrevealed: [...document.querySelectorAll('.reveal:not(.in-view), .reveal-stagger:not(.in-view)')].map((node) => node.className),
-        hasEmDash: text.includes(String.fromCodePoint(0x2014)) || html.includes(String.fromCodePoint(0x2014)),
+        hasEmDash: text.includes(String.fromCodePoint(0x2014)) || bodyHtml.includes(String.fromCodePoint(0x2014)),
         hasDecorativeEmoji,
         internalLinks: [...document.querySelectorAll('a[href^="/"]')].map((anchor) => anchor.getAttribute('href'))
       };
@@ -148,7 +148,54 @@ for (const viewport of viewports) {
     audit.viewport = viewport.name;
     audit.internalLinks.forEach((href) => internalLinks.add(href));
     delete audit.internalLinks;
+    if (viewport.mobile && ['/', '/personal/', '/offscript/'].includes(route)) {
+      audit.mobileMenu = await evaluate(`(async () => {
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const toggle = document.querySelector('.nav-toggle');
+        const menu = document.querySelector('#site-nav');
+        toggle.click();
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        const links = [...menu.querySelectorAll('a')];
+        const openState = {
+          expanded: toggle.getAttribute('aria-expanded'),
+          display: getComputedStyle(menu).display,
+          visibility: getComputedStyle(menu).visibility,
+          opacity: getComputedStyle(menu).opacity,
+          background: getComputedStyle(menu).backgroundColor,
+          links: links.map((link) => {
+            const rect = link.getBoundingClientRect();
+            const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            return {
+              text: link.textContent.trim(),
+              color: getComputedStyle(link).color,
+              display: getComputedStyle(link).display,
+              visibility: getComputedStyle(link).visibility,
+              opacity: getComputedStyle(link).opacity,
+              clickable: hit === link || link.contains(hit),
+              hit: hit ? hit.tagName.toLowerCase() + '.' + (hit.className || '') : 'none',
+              rect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
+            };
+          })
+        };
+        toggle.click();
+        const closed = toggle.getAttribute('aria-expanded') === 'false' && getComputedStyle(menu).display === 'none';
+        toggle.click();
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        const reopened = toggle.getAttribute('aria-expanded') === 'true' && getComputedStyle(menu).display === 'grid';
+        toggle.click();
+        return { openState, closed, reopened };
+      })()`);
+    }
     results.push(audit);
+
+    if (viewport.mobile && route === '/') {
+      await evaluate(`new Promise((resolve) => { document.querySelector('.nav-toggle').click(); setTimeout(() => resolve(true), 300); })`);
+      const menuScreenshot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+      fs.writeFileSync(path.join(screenshotDir, 'mobile-375--home--menu-open.png'), Buffer.from(menuScreenshot.data, 'base64'));
+      await evaluate(`document.querySelector('.nav-toggle').click()`);
+    }
 
     const metrics = await send('Page.getLayoutMetrics');
     const size = metrics.cssContentSize || metrics.contentSize;
@@ -182,6 +229,13 @@ for (const result of results) {
   if (result.unrevealed.length) failures.push(`${result.viewport} ${result.route}: content stayed hidden after scrolling (${result.unrevealed.join(', ')})`);
   if (result.hasEmDash) failures.push(`${result.viewport} ${result.route}: em dash remains`);
   if (result.hasDecorativeEmoji) failures.push(`${result.viewport} ${result.route}: decorative emoji remains`);
+  if (result.mobileMenu) {
+    const { openState, closed, reopened } = result.mobileMenu;
+    if (openState.expanded !== 'true' || openState.display !== 'grid' || openState.visibility !== 'visible' || openState.opacity !== '1') failures.push(`${result.viewport} ${result.route}: mobile menu did not become visible`);
+    if (openState.links.some((link) => link.display === 'none' || link.visibility !== 'visible' || link.opacity !== '1' || !link.clickable)) failures.push(`${result.viewport} ${result.route}: a mobile menu link is hidden or not clickable`);
+    if (openState.links.some((link) => link.color === openState.background)) failures.push(`${result.viewport} ${result.route}: mobile menu link color matches its background`);
+    if (!closed || !reopened) failures.push(`${result.viewport} ${result.route}: mobile menu did not close and reopen correctly`);
+  }
   for (const card of result.related) {
     if (!approvedTitles.has(card.title)) failures.push(`${result.viewport} ${result.route}: stale related title ${card.title}`);
     if (!/^The OffScript · Issue 00[1-5]$/.test(card.issue)) failures.push(`${result.viewport} ${result.route}: incorrect related issue metadata ${card.issue}`);

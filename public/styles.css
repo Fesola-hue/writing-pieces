@@ -404,6 +404,7 @@ body:not(.home-page) .site-header { position: relative; width: var(--wrap); marg
   .site-header nav[data-open] { display: grid; animation: menu-open .25s ease both; }
   @keyframes menu-open { from { opacity: 0; transform: translateY(-8px); } }
   .site-header nav a { padding: 1rem; }
+  .home-page .site-header nav a { color: var(--ink); }
   .lobby-hero { min-height: 100svh; padding: 0 1rem 2.5rem; background-position: center 25%; }
   .lobby-hero h1 { font-size: clamp(2rem, 10vw, 3.2rem); }
   .lobby-hero > div { grid-template-columns: 1fr; gap: 0; }
