@@ -136,7 +136,7 @@ function nav(active) {
 }
 
 function footer() {
-  return `<footer class="site-footer"><div><a class="footer-name" href="/">Aisha Onola</a><p>Writer in Lagos.</p><a class="footer-email" href="mailto:contact@aishaonola.me">contact@aishaonola.me</a></div><a class="back-top" href="#top">Back to top ↑</a></footer>`;
+  return `<footer class="site-footer"><div><a class="footer-name" href="https://aishaonola.me">Aisha Onola</a><p>Writer in Lagos.</p><nav class="footer-links" aria-label="Contact and professional links"><a href="mailto:contact@aishaonola.me">contact@aishaonola.me</a><span aria-hidden="true">·</span><a href="https://www.linkedin.com/in/aishaonola" target="_blank" rel="noopener noreferrer">LinkedIn</a><span aria-hidden="true">·</span><a href="/Aisha_Onola_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a></nav></div><a class="back-top" href="#top">Back to top ↑</a></footer>`;
 }
 
 function page({ active, body, bodyClass = '', ...meta }) {

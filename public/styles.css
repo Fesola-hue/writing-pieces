@@ -375,7 +375,8 @@ body:not(.home-page) .site-header { position: relative; width: var(--wrap); marg
 .site-footer > div { grid-column: 1; }
 .footer-name { font: 700 .85rem/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.01em; color: var(--cream); text-decoration: none; display: block; margin-bottom: .5rem; }
 .site-footer p { font: 500 .61rem/1.7 'JetBrains Mono'; letter-spacing: .06em; text-transform: uppercase; }
-.footer-email { color: rgba(246,239,228,.75); font: 500 .61rem/1.7 'JetBrains Mono', monospace; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; }
+.footer-links { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; color: rgba(246,239,228,.75); font: 500 .61rem/1.7 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+.footer-links a { color: inherit; text-decoration: none; text-transform: none; }
 .back-top { justify-self: end; font: 500 .61rem 'JetBrains Mono'; text-transform: uppercase; }
 
 @media (max-width: 980px) {

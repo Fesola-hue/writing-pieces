@@ -15,7 +15,7 @@ const portfolioTitles = {
   '001': 'The NYSC Reform Everyone Missed',
   '002': 'The US Visa Squeeze',
   '003': 'The Boom Nobody Can Feel',
-  '004': 'Nigeria Uses AI but doesnt own any of it',
+  '004': 'Nigeria Uses AI but doesn’t own any of it',
   '005': 'Why Cement Costs So Much'
 };
 
@@ -23,7 +23,7 @@ const followTitles = {
   '001': 'The NYSC Reform Everyone Missed',
   '002': 'The US Visa Squeeze',
   '003': 'The Boom Nobody Can Feel',
-  '004': 'Nigeria Uses AI but doesnt own any of it',
+  '004': 'Nigeria Uses AI but doesn’t own any of it',
   '005': 'Why Cement Costs So Much'
 };
 

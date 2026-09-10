@@ -106,6 +106,12 @@ for (const viewport of viewports) {
       const figure = document.querySelector('.article-page.is-offscript .article-hero figure');
       const subscription = document.querySelector('.article-page.is-offscript .article-subscribe');
       const footer = document.querySelector('.site-footer');
+      const footerLinks = [...document.querySelectorAll('.footer-links a')].map((link) => ({
+        text: link.textContent.trim(),
+        href: link.getAttribute('href'),
+        target: link.getAttribute('target'),
+        rel: link.getAttribute('rel')
+      }));
       const articleParagraphs = [...document.querySelectorAll('.article-body p')];
       const related = [...document.querySelectorAll('.related article.is-offscript')].map((card) => ({
         issue: card.querySelector('p')?.textContent.trim() || '',
@@ -129,6 +135,7 @@ for (const viewport of viewports) {
         subscriptionBackground: subscription ? getComputedStyle(subscription).backgroundColor : '',
         subscriptionColor: subscription ? getComputedStyle(subscription).color : '',
         footerBackground: footer ? getComputedStyle(footer).backgroundColor : '',
+        footerLinks,
         figureBackground: figure ? getComputedStyle(figure).backgroundColor : '',
         figureShadow: figure ? getComputedStyle(figure).boxShadow : '',
         figureTransform: figure ? getComputedStyle(figure).transform : '',
@@ -219,11 +226,15 @@ const approvedTitles = new Set([
   'The NYSC Reform Everyone Missed',
   'The US Visa Squeeze',
   'The Boom Nobody Can Feel',
-  'Nigeria Uses AI but doesnt own any of it',
+  'Nigeria Uses AI but doesn’t own any of it',
   'Why Cement Costs So Much'
 ]);
 const failures = [];
 for (const result of results) {
+  const [email, linkedin, resume] = result.footerLinks;
+  if (email?.text !== 'contact@aishaonola.me' || email?.href !== 'mailto:contact@aishaonola.me') failures.push(`${result.viewport} ${result.route}: footer email link is incorrect`);
+  if (linkedin?.text !== 'LinkedIn' || linkedin?.href !== 'https://www.linkedin.com/in/aishaonola' || linkedin?.target !== '_blank' || linkedin?.rel !== 'noopener noreferrer') failures.push(`${result.viewport} ${result.route}: footer LinkedIn link is incorrect`);
+  if (resume?.text !== 'Résumé' || resume?.href !== '/Aisha_Onola_Resume.pdf' || resume?.target !== '_blank' || resume?.rel !== 'noopener noreferrer') failures.push(`${result.viewport} ${result.route}: footer Résumé link is incorrect`);
   if (result.horizontalOverflow > 1) failures.push(`${result.viewport} ${result.route}: ${result.horizontalOverflow}px horizontal overflow`);
   if (result.brokenImages.length) failures.push(`${result.viewport} ${result.route}: broken images ${result.brokenImages.join(', ')}`);
   if (result.unrevealed.length) failures.push(`${result.viewport} ${result.route}: content stayed hidden after scrolling (${result.unrevealed.join(', ')})`);

@@ -29,7 +29,7 @@ const approvedFollowTitles = {
   '001': 'The NYSC Reform Everyone Missed',
   '002': 'The US Visa Squeeze',
   '003': 'The Boom Nobody Can Feel',
-  '004': 'Nigeria Uses AI but doesnt own any of it',
+  '004': 'Nigeria Uses AI but doesn’t own any of it',
   '005': 'Why Cement Costs So Much'
 };
 for (const [issueNumber, title] of Object.entries(approvedFollowTitles)) {
@@ -94,11 +94,18 @@ if (!stylesheet.includes(".article-page.is-offscript .article-subscribe { color:
 if (!stylesheet.includes(".site-footer") || !stylesheet.includes("background: var(--ink);")) errors.push('Global footer is not dark');
 
 const generated = [homepage, personalPage, offscriptPage, explorePage, ...writing.map((item) => readOutput(path.join('writing', item.slug, 'index.html')))].join('\n');
+const generatedPages = [homepage, personalPage, offscriptPage, explorePage, ...writing.map((item) => readOutput(path.join('writing', item.slug, 'index.html')))];
+for (const html of generatedPages) {
+  if (!html.includes('href="mailto:contact@aishaonola.me"')) errors.push('A generated page is missing the footer email link');
+  if (!html.includes('href="https://www.linkedin.com/in/aishaonola" target="_blank" rel="noopener noreferrer">LinkedIn</a>')) errors.push('A generated page is missing the secure footer LinkedIn link');
+  if (!html.includes('href="/Aisha_Onola_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>')) errors.push('A generated page is missing the secure footer Résumé link');
+}
+if (!fs.existsSync(path.join(ROOT, 'dist', 'Aisha_Onola_Resume.pdf'))) errors.push('The cleanly named résumé PDF is absent from the production output');
 const permanentTitles = {
   '001': 'The NYSC Reform Everyone Missed',
   '002': 'The US Visa Squeeze',
   '003': 'The Boom Nobody Can Feel',
-  '004': 'Nigeria Uses AI but doesnt own any of it',
+  '004': 'Nigeria Uses AI but doesn’t own any of it',
   '005': 'Why Cement Costs So Much'
 };
 for (const [issueNumber, title] of Object.entries(permanentTitles)) {

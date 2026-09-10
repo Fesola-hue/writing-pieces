@@ -18,7 +18,7 @@ Audit date: 6 September 2026.
 | 001 | The NYSC Reform Everyone Missed | `offscript-001-everyone-argued-about-a-uniform-they-missed-the-real-reform` |
 | 002 | The US Visa Squeeze | `offscript-002-the-us-is-quietly-locking-nigerians-out` |
 | 003 | The Boom Nobody Can Feel | `offscript-003-nigeria-is-quietly-having-one-of-its-best-years-internationally-here-s-why-you-still-don-t-feel-it` |
-| 004 | Nigeria Uses AI but doesnt own any of it | `offscript-004-nigeria-doesn-t-have-an-ai-problem-it-has-an-ownership-problem` |
+| 004 | Nigeria Uses AI but doesn’t own any of it | `offscript-004-nigeria-doesn-t-have-an-ai-problem-it-has-an-ownership-problem` |
 | 005 | Why Cement Costs So Much | `offscript-005-we-make-enough-cement-to-export-it-so-why-is-a-bag-still-13-000` |
 
 Validated the restored Personal and OffScript collections without publishing a collection-size claim.

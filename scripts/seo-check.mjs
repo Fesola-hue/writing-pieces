@@ -107,7 +107,8 @@ const prohibitedClaims = [
 for (const claim of prohibitedClaims) if (generated.toLowerCase().includes(claim.toLowerCase())) errors.push(`Generated pages retain a prohibited collection-size claim: ${claim}`);
 if (!generated.includes('Choose an idea. Follow the connections between personal observations and reported stories.')) errors.push('The exact Explore introduction is absent');
 if (/writing\.aishaonola\.me|localhost|127\.0\.0\.1|\.pages\.dev|\.workers\.dev|preview/i.test(generated) || /<meta[^>]+noindex|<meta[^>]+nofollow/i.test(generated)) errors.push('A preview domain or restrictive robots directive remains');
-if ([...generated.matchAll(/class="(?:wordmark|footer-name)" href="([^"]+)"/g)].some((match) => match[1] !== '/')) errors.push('A site name link does not return to the writing homepage');
+if ([...generated.matchAll(/class="wordmark" href="([^"]+)"/g)].some((match) => match[1] !== '/')) errors.push('A header wordmark does not return to the writing homepage');
+if ([...generated.matchAll(/class="footer-name" href="([^"]+)"/g)].some((match) => match[1] !== 'https://aishaonola.me')) errors.push('A footer name link does not lead to Aisha Onola\'s main website');
 if (!generated.includes('href="https://theoffscript.page')) errors.push('A crawlable The OffScript link is absent');
 
 const offscriptPage = pages.find((page) => page.pathname === '/offscript/')?.html || '';
