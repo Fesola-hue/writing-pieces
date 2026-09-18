@@ -139,8 +139,33 @@ function footer() {
   return `<footer class="site-footer"><div><a class="footer-name" href="https://aishaonola.me">Aisha Onola</a><p>Writer in Lagos.</p><nav class="footer-links" aria-label="Contact and professional links"><a href="mailto:contact@aishaonola.me">contact@aishaonola.me</a><span aria-hidden="true">·</span><a href="https://www.linkedin.com/in/aishaonola" target="_blank" rel="noopener noreferrer">LinkedIn</a><span aria-hidden="true">·</span><a href="/Aisha_Onola_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a></nav></div><a class="back-top" href="#top">Back to top ↑</a></footer>`;
 }
 
+function contactExperience() {
+  return `<section class="contact-experience" data-contact-experience role="dialog" aria-modal="true" aria-labelledby="contact-heading" aria-hidden="true" hidden>
+  <header class="contact-header"><span class="wordmark" aria-hidden="true">A. Onola</span><button class="contact-close" type="button" data-contact-close aria-label="Close contact screen"><span>Back to the stories</span><i aria-hidden="true">×</i></button></header>
+  <div class="contact-state contact-form-state" data-contact-form-state>
+    <div class="contact-intro"><p class="eyebrow">A note between stories</p><h2 id="contact-heading">Let’s make something <em>worth reading.</em></h2><p>Got a story, brief, role, or idea you think I’d be good for? Send it my way.</p></div>
+    <div class="contact-form-wrap">
+      <form class="contact-form" data-contact-form action="https://formspree.io/f/mzeblevj" method="post">
+        <input type="hidden" name="source" value="read.aishaonola.me">
+        <div class="contact-fields">
+          <div class="contact-field"><label for="contact-name">Name <span aria-hidden="true">*</span></label><input id="contact-name" name="name" type="text" autocomplete="name" required></div>
+          <div class="contact-field"><label for="contact-email">Email <span aria-hidden="true">*</span></label><input id="contact-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="contact-field contact-field-wide"><label for="contact-project-type">What do you have in mind? <span aria-hidden="true">*</span></label><select id="contact-project-type" name="project_type" required><option value="" selected disabled>Select one</option><option>Writing role</option><option>Article / essay</option><option>Content writing</option><option>Editorial project</option><option>Freelance project</option><option>Collaboration</option><option>Something else</option></select></div>
+          <div class="contact-field contact-field-wide"><label for="contact-message">Tell me about it <span aria-hidden="true">*</span></label><textarea id="contact-message" name="message" rows="5" required></textarea></div>
+        </div>
+        <p class="contact-error" data-contact-error role="alert" aria-live="assertive" hidden></p>
+        <div class="contact-actions"><button class="button button-dark contact-submit" type="submit" data-contact-submit><span>Send it ↗</span></button><p>Prefer email? <a href="mailto:contact@aishaonola.me">contact@aishaonola.me</a></p></div>
+      </form>
+    </div>
+  </div>
+  <div class="contact-state contact-success-state" data-contact-success-state aria-labelledby="contact-success-heading" hidden>
+    <div><p class="eyebrow">Message sent</p><h2 id="contact-success-heading" tabindex="-1">Got it. I’ll get back to you soon :)</h2><p>In a hurry? You can also email me at <a href="mailto:contact@aishaonola.me">contact@aishaonola.me</a></p><button class="contact-return" type="button" data-contact-return>Back to the stories <span aria-hidden="true">→</span></button></div>
+  </div>
+</section>`;
+}
+
 function page({ active, body, bodyClass = '', ...meta }) {
-  return `${head(meta)}<body id="top" class="${bodyClass}" data-route="${active}"><div class="route-wipe" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>${nav(active)}<main id="main">${body}</main>${footer()}</body></html>`;
+  return `${head(meta)}<body id="top" class="${bodyClass}" data-route="${active}"><div class="route-wipe" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>${nav(active)}<main id="main">${body}</main>${footer()}${contactExperience()}</body></html>`;
 }
 
 function featuredPair() {
@@ -165,11 +190,11 @@ function gateways() {
 }
 
 function compactSubscribe() {
-  return `<section class="compact-subscribe"><div class="wrap"><div><p class="eyebrow">Keep the tab open</p><h2>Like the way I write?</h2></div><div class="subscribe-options"><a href="https://aishaonola.medium.com/"><span>Personal writing</span><b>Follow on Medium ↗</b></a><a href="https://aishaonola.substack.com/"><span>Personal writing</span><b>Read on Substack ↗</b></a><a href="https://theoffscript.page/#join"><span>The OffScript</span><b>Subscribe free ↗</b></a></div></div></section>`;
+  return `<section class="compact-subscribe"><div class="wrap"><div><p class="eyebrow">Keep the tab open</p><h2>Like the way I write?</h2></div><div class="subscribe-options"><a href="https://aishaonola.medium.com/"><span>Personal writing</span><b>Follow on Medium ↗</b></a><a href="https://aishaonola.substack.com/"><span>Personal writing</span><b>Read on Substack ↗</b></a><a href="https://theoffscript.page/#join"><span>The OffScript</span><b>Subscribe free ↗</b></a><button type="button" data-contact-open><span>WORK WITH ME</span><b>Have a brief? ↗</b></button></div></div></section>`;
 }
 
 function writerSection() {
-  return `<section class="writer-section reveal" aria-labelledby="writer-section-heading"><div class="wrap writer-section-inner"><header class="writer-section-heading"><p class="eyebrow">Behind the writing</p><h2 id="writer-section-heading">Aisha Onola</h2></header><div class="writer-section-copy"><p>I&#8217;m a writer in Lagos, and I tend to write about the things I&#8217;m trying to understand: how systems affect ordinary people, what money changes, what culture tells us about ourselves, and sometimes, what it feels like to be a person figuring life out in real time.</p><p>I&#8217;m also the founder and editor of The OffScript, where I write and build stories for young Nigerians around politics, money, technology and culture.</p><nav class="writer-links" aria-label="More about Aisha"><a href="https://aishaonola.me/#about">More about me →</a><a href="mailto:contact@aishaonola.me">Get in touch →</a></nav></div></div></section>`;
+  return `<section class="writer-section reveal" aria-labelledby="writer-section-heading"><div class="wrap writer-section-inner"><header class="writer-section-heading"><p class="eyebrow">Behind the writing</p><h2 id="writer-section-heading">Aisha Onola</h2></header><div class="writer-section-copy"><p>I&#8217;m a writer in Lagos, and I tend to write about the things I&#8217;m trying to understand: how systems affect ordinary people, what money changes, what culture tells us about ourselves, and sometimes, what it feels like to be a person figuring life out in real time.</p><p>I&#8217;m also the founder and editor of The OffScript, where I write and build stories for young Nigerians around politics, money, technology and culture.</p><nav class="writer-links" aria-label="More about Aisha"><a href="https://aishaonola.me/#about">More about me →</a><button type="button" data-contact-open>Have a brief?</button></nav></div></div></section>`;
 }
 
 function threadCluster(limit = 8) {
@@ -244,6 +269,11 @@ function relatedFor(item) {
   return [best('personal'), best('offscript')].filter(Boolean);
 }
 
+function reportingTrail(item) {
+  if (item.kind !== 'offscript' || !item.sources?.length) return '';
+  return `<section class="reporting-trail wrap-narrow reveal" aria-labelledby="sources-${item.slug}"><header><p class="eyebrow">Reporting trail</p><h2 id="sources-${item.slug}">Sources &amp; further reading</h2><p>The reporting, data and documents behind this story.</p></header><div class="source-list">${item.sources.map((source) => `<article class="source-row"><div><p class="source-publication">${escapeHtml(source.publication)}</p><h3><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a></h3><a class="source-link" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Read source <span aria-hidden="true">↗</span></a></div>${source.date ? `<time>${escapeHtml(source.date)}</time>` : ''}</article>`).join('')}</div></section>`;
+}
+
 function articlePage(item) {
   const pathname = internal(item);
   const canonical = absolute(pathname);
@@ -252,6 +282,7 @@ function articlePage(item) {
   const subscribe = item.kind === 'offscript' ? `<a class="button button-blue" href="${item.subscribeUrl}">Subscribe to The OffScript ↗</a><a class="text-link" href="/personal/">Explore personal writing →</a>` : `<a class="button button-cream" href="${item.subscribeUrl}">${item.publication === 'Medium' ? 'Follow on Medium' : 'Read on Substack'} ↗</a><a class="text-link" href="/offscript/">Explore The OffScript →</a>`;
   const body = `<div class="reading-progress" aria-hidden="true"><i></i></div><header class="article-hero"><div class="article-hero-copy"><a class="back-link" href="/${item.kind === 'offscript' ? 'offscript' : 'personal'}/">← Back to the shelf</a><p class="article-kicker">${item.kind === 'offscript' ? `The OffScript · Issue ${item.issueNumber}` : 'Personal writing'}</p><h1>${escapeHtml(item.title)}</h1><p class="article-subtitle">${escapeHtml(item.subtitle)}</p><div class="article-meta"><time datetime="${item.date}">${escapeHtml(formatDate(item.date))}</time>${item.originalUrl ? `<span aria-hidden="true">•</span><a href="${escapeHtml(item.originalUrl)}">Originally published in ${escapeHtml(originalLabel)} ↗</a>` : `<span aria-hidden="true">•</span><span>${escapeHtml(item.publication)}</span>`}</div></div><figure><img src="${item.cover}" alt="${escapeHtml(item.kind === 'offscript' ? `Cover for The OffScript issue ${item.issueNumber}: ${item.title}` : `Cover image for ${item.title}`)}"><figcaption>${item.kind === 'offscript' ? `The OffScript · Issue ${item.issueNumber}` : escapeHtml(item.publication)}</figcaption></figure></header>
   <div class="article-layout"><article class="article-body">${item.bodyHtml}</article><aside class="article-aside"><p>${item.kind === 'offscript' ? `ISSUE ${item.issueNumber}` : 'PERSONAL'}</p><span>${escapeHtml(item.topics.join(' · '))}</span></aside></div>
+  ${reportingTrail(item)}
   <div class="article-after wrap-narrow reveal">${behindPiece(item)}${item.originalUrl ? `<div class="original-cta"><p>Originally published in ${escapeHtml(originalLabel)}</p><a class="button ${item.kind === 'offscript' ? 'button-blue' : 'button-dark'}" href="${escapeHtml(item.originalUrl)}">Read the original on ${escapeHtml(originalLabel)} ↗</a></div>` : ''}<section class="related" aria-labelledby="related-heading"><p class="eyebrow">Keep following it</p><h2 id="related-heading">Follow this thought</h2><div class="reveal-stagger">${related.map((candidate) => `<article class="${categoryClass(candidate)}"><p>${candidate.kind === 'offscript' ? `The OffScript · Issue ${candidate.issueNumber}` : 'Personal writing'}</p><h3><a href="${internal(candidate)}">${escapeHtml(candidate.title)}</a></h3><div class="topic-row">${candidate.topics.filter((topic) => item.topics.includes(topic)).map((topic) => `<span>${escapeHtml(topic)}</span>`).join('')}</div><a class="read-link" href="${internal(candidate)}">Read the story →</a></article>`).join('')}</div></section></div>
   <section class="article-subscribe reveal"><div><h2>${item.kind === 'offscript' ? 'Stay in tune.' : 'More personal writing?'}</h2><p>${item.kind === 'offscript' ? 'One weekly email explaining the stories shaping everyday life in Nigeria.' : 'Essays and observations about identity, people, work, and culture.'}</p>${subscribe}</div></section>`;
   const collectionPath = item.kind === 'offscript' ? '/offscript/' : '/personal/';

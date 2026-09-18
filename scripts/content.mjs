@@ -213,6 +213,18 @@ export function validateWriting(writing) {
     if (item.kind === 'offscript') {
       if (!item.issueNumber) errors.push(`${item.slug}: imported OffScript issue has no issue number`);
       if (!item.body?.trim()) errors.push(`${item.slug}: imported OffScript issue has no body`);
+      if (!Array.isArray(item.sources) || !item.sources.length) errors.push(`${item.slug}: OffScript issue has no sources`);
+      for (const [index, source] of (item.sources || []).entries()) {
+        if (!source?.publication?.trim()) errors.push(`${item.slug}: source ${index + 1} has no publication`);
+        if (!source?.title?.trim()) errors.push(`${item.slug}: source ${index + 1} has no title`);
+        try {
+          const url = new URL(source?.url || '');
+          if (!['http:', 'https:'].includes(url.protocol)) throw new Error('unsupported protocol');
+        } catch {
+          errors.push(`${item.slug}: source ${index + 1} has an invalid URL`);
+        }
+        if (source?.date !== undefined && typeof source.date !== 'string') errors.push(`${item.slug}: source ${index + 1} has an invalid date`);
+      }
       if (seenIssues.has(item.issueNumber)) errors.push(`Duplicate OffScript issue: ${item.issueNumber}`);
       seenIssues.add(item.issueNumber);
     }

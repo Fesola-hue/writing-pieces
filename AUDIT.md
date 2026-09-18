@@ -39,3 +39,4 @@ The old homepage attached `data-writing-card` to both featured cards and every a
 ## Behind the Piece audit
 
 The previous metadata contained Codex-authored voice, form, inspiration, and process commentary for the writing collection. None was supplied by Aisha. All of it must be deleted. The rebuilt model accepts only manually authored `note`, `process`, and `extras`; all current values are empty, so no Behind the Piece section is rendered publicly.
+

@@ -236,3 +236,132 @@ if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reducedMotion.m
     el.addEventListener('mouseleave', () => el.classList.remove('is-magnetic'));
   });
 }
+
+const contactExperience = document.querySelector('[data-contact-experience]');
+if (contactExperience) {
+  const openers = [...document.querySelectorAll('[data-contact-open]')];
+  const closeButton = contactExperience.querySelector('[data-contact-close]');
+  const returnButton = contactExperience.querySelector('[data-contact-return]');
+  const formState = contactExperience.querySelector('[data-contact-form-state]');
+  const successState = contactExperience.querySelector('[data-contact-success-state]');
+  const form = contactExperience.querySelector('[data-contact-form]');
+  const submitButton = contactExperience.querySelector('[data-contact-submit]');
+  const submitLabel = submitButton.querySelector('span');
+  const error = contactExperience.querySelector('[data-contact-error]');
+  const pageLayers = [...document.body.children].filter((element) => element !== contactExperience);
+  let opener = null;
+  let savedScrollY = 0;
+  let isSubmitting = false;
+  let submittedSuccessfully = false;
+
+  const focusable = () => [...contactExperience.querySelectorAll('button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), a[href]')]
+    .filter((element) => !element.closest('[hidden]') && element.getClientRects().length);
+
+  const showForm = () => {
+    successState.hidden = true;
+    formState.hidden = false;
+  };
+
+  const openContact = (trigger) => {
+    opener = trigger;
+    savedScrollY = window.scrollY;
+    submittedSuccessfully = false;
+    showForm();
+    pageLayers.forEach((element) => { element.inert = true; });
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.style.width = '100%';
+    contactExperience.hidden = false;
+    contactExperience.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => {
+      contactExperience.classList.add('is-open');
+      requestAnimationFrame(() => form.querySelector('input:not([type="hidden"])')?.focus({ preventScroll: true }));
+    });
+  };
+
+  const closeContact = () => {
+    if (contactExperience.hidden || isSubmitting) return;
+    contactExperience.classList.remove('is-open');
+    const finish = () => {
+      contactExperience.hidden = true;
+      contactExperience.setAttribute('aria-hidden', 'true');
+      contactExperience.scrollTop = 0;
+      pageLayers.forEach((element) => { element.inert = false; });
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, savedScrollY);
+      opener?.focus({ preventScroll: true });
+      if (submittedSuccessfully) {
+        form.reset();
+        submittedSuccessfully = false;
+        showForm();
+      }
+    };
+    if (reducedMotion.matches) finish();
+    else setTimeout(finish, 320);
+  };
+
+  openers.forEach((button) => button.addEventListener('click', () => openContact(button)));
+  closeButton.addEventListener('click', closeContact);
+  returnButton.addEventListener('click', closeContact);
+
+  contactExperience.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeContact();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const available = focusable();
+    if (!available.length) return;
+    const first = available[0];
+    const last = available.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (isSubmitting || !form.reportValidity()) return;
+    isSubmitting = true;
+    error.hidden = true;
+    error.textContent = '';
+    submitButton.disabled = true;
+    closeButton.disabled = true;
+    submitLabel.textContent = 'Sending…';
+    form.setAttribute('aria-busy', 'true');
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      });
+      if (!response.ok) {
+        if (response.status === 429) throw new Error('Too many attempts were sent at once. Please wait a moment and try again, or email me instead.');
+        throw new Error('That didn’t go through. Please check your connection and try again, or email me instead.');
+      }
+      submittedSuccessfully = true;
+      contactExperience.classList.add('is-changing');
+      const revealSuccess = () => {
+        formState.hidden = true;
+        successState.hidden = false;
+        contactExperience.scrollTop = 0;
+        contactExperience.classList.remove('is-changing');
+        successState.querySelector('h2')?.focus({ preventScroll: true });
+      };
+      if (reducedMotion.matches) revealSuccess();
+      else setTimeout(revealSuccess, 220);
+    } catch (submissionError) {
+      error.textContent = submissionError.message || 'That didn’t go through. Please check your connection and try again, or email me instead.';
+      error.hidden = false;
+      error.focus?.({ preventScroll: true });
+    } finally {
+      isSubmitting = false;
+      submitButton.disabled = false;
+      closeButton.disabled = false;
+      submitLabel.textContent = 'Send it ↗';
+      form.removeAttribute('aria-busy');
+    }
+  });
+}

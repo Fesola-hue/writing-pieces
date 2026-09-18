@@ -74,6 +74,14 @@ for (const item of writing) {
   if (!html.includes('Follow this thought')) errors.push(`${item.slug}: related-writing section is absent`);
   if ((html.match(/class="is-personal"/g) || []).length < 1 || (html.match(/class="is-offscript"/g) || []).length < 1) errors.push(`${item.slug}: related writing must include one personal and one OffScript piece`);
   if (!html.includes('application/ld+json')) errors.push(`${item.slug}: structured article data is absent`);
+  const hasReportingTrail = html.includes('class="reporting-trail');
+  if (item.kind === 'offscript' && !hasReportingTrail) errors.push(`${item.slug}: sources and further reading section is absent`);
+  if (item.kind === 'personal' && hasReportingTrail) errors.push(`${item.slug}: personal writing must not render a sources section`);
+  if (hasReportingTrail && (!html.includes('The reporting, data and documents behind this story.') || html.includes('Undated'))) errors.push(`${item.slug}: reporting trail copy or optional date handling is incorrect`);
+  for (const source of item.sources || []) {
+    const safeUrl = source.url.replaceAll('&', '&amp;');
+    if (!html.includes(`href="${safeUrl}" target="_blank" rel="noopener noreferrer"`)) errors.push(`${item.slug}: source link is absent or unsafe (${source.url})`);
+  }
   const relatedSection = html.match(/<section class="related"[\s\S]*?<\/section>/)?.[0] || '';
   const approvedRelated = featuredOffscript.filter((candidate) => relatedSection.includes(`href="/writing/${candidate.slug}/"`) && relatedSection.includes(`>${candidate.followTitle}</a>`));
   if (approvedRelated.length !== 1) errors.push(`${item.slug}: Follow this thought must contain one correctly titled and linked OffScript card`);
@@ -99,7 +107,13 @@ for (const html of generatedPages) {
   if (!html.includes('href="mailto:contact@aishaonola.me"')) errors.push('A generated page is missing the footer email link');
   if (!html.includes('href="https://www.linkedin.com/in/aishaonola" target="_blank" rel="noopener noreferrer">LinkedIn</a>')) errors.push('A generated page is missing the secure footer LinkedIn link');
   if (!html.includes('href="/Aisha_Onola_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>')) errors.push('A generated page is missing the secure footer Résumé link');
+  if (!html.includes('data-contact-experience') || !html.includes('role="dialog" aria-modal="true"')) errors.push('A generated page is missing the contact room');
+  if (!html.includes('action="https://formspree.io/f/mzeblevj" method="post"')) errors.push('A generated page has an incorrect contact endpoint');
+  if (!html.includes('name="source" value="read.aishaonola.me"')) errors.push('A generated page is missing the writing-site source field');
+  for (const field of ['name', 'email', 'project_type', 'message']) if (!html.includes(`name="${field}"`)) errors.push(`A generated page is missing the ${field} inquiry field`);
 }
+if ((homepage.match(/data-contact-open/g) || []).length !== 2 || !homepage.includes('data-contact-open>Have a brief?</button>') || !homepage.includes('data-contact-open><span>WORK WITH ME</span><b>Have a brief? ↗</b></button>')) errors.push('Homepage must contain both writing-specific contact entry points');
+if ([personalPage, offscriptPage, explorePage].some((html) => html.includes('data-contact-open'))) errors.push('Contact CTA is repeated outside the intended homepage placement');
 if (!fs.existsSync(path.join(ROOT, 'dist', 'Aisha_Onola_Resume.pdf'))) errors.push('The cleanly named résumé PDF is absent from the production output');
 const permanentTitles = {
   '001': 'The NYSC Reform Everyone Missed',
@@ -138,6 +152,7 @@ if (!fs.readFileSync(path.join(ROOT, 'public', 'site.js'), 'utf8').includes("eve
 const clientScript = fs.readFileSync(path.join(ROOT, 'public', 'site.js'), 'utf8');
 if (!clientScript.includes("addEventListener('touchstart'") || !clientScript.includes("addEventListener('touchend'")) errors.push('Touch shelf navigation is absent');
 if (!clientScript.includes('route-leaving')) errors.push('Route transition handling is absent');
+for (const hook of ['fetch(form.action', 'new FormData(form)', "event.key === 'Escape'", 'element.inert = true', 'window.scrollTo(0, savedScrollY)', 'submittedSuccessfully']) if (!clientScript.includes(hook)) errors.push(`Contact behavior hook is absent: ${hook}`);
 if (!fs.existsSync(path.join(ROOT, 'dist', 'sitemap.xml'))) errors.push('Sitemap was not built');
 
 if (errors.length) {

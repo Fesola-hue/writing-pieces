@@ -114,6 +114,7 @@ async function main() {
       featured: false,
       topics: prior.topics?.length ? prior.topics : (topicMap[issueNumber] || ['Nigeria']),
       body: article.articleBody || prior.body || '',
+      sources: prior.sources || [],
       source: 'JSON-LD',
       syncedAt: new Date().toISOString()
     });
